@@ -1,7 +1,7 @@
 import re
 
 
-def findInCS(cs: str, key: str):
+def _findInCS(cs: str, key: str):
     fields = cs.split(";")
     for field in fields:
         if field.startswith(key):
@@ -30,7 +30,7 @@ class ConnectionString:
 
     @classmethod
     def from_odbc(cls, connectionstring):
-        _server_port = findInCS(connectionstring, 'Server')
+        _server_port = _findInCS(connectionstring, 'Server')
         _server = re\
             .search(r"(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]", _server_port)\
             .group(0)
@@ -38,17 +38,17 @@ class ConnectionString:
         return cls(
             server=_server,
             port=_port,
-            database=findInCS(connectionstring, 'Database'),
-            user=findInCS(connectionstring, 'Uid'),
-            password=findInCS(connectionstring, 'Pwd'),
-            encrypt=findInCS(connectionstring, 'Encrypt') == 'yes',
-            thrust_server_certificate=findInCS(connectionstring, 'TrustServerCertificate') == 'yes',
-            timeout=int(findInCS(connectionstring, 'Connection Timeout'))
+            database=_findInCS(connectionstring, 'Database'),
+            user=_findInCS(connectionstring, 'Uid'),
+            password=_findInCS(connectionstring, 'Pwd'),
+            encrypt=_findInCS(connectionstring, 'Encrypt') == 'yes',
+            thrust_server_certificate=_findInCS(connectionstring, 'TrustServerCertificate') == 'yes',
+            timeout=int(_findInCS(connectionstring, 'Connection Timeout'))
         )
 
     @classmethod
     def from_ado_net(cls, connectionstring):
-        _server_port = findInCS(connectionstring, 'Server')
+        _server_port = _findInCS(connectionstring, 'Server')
         _server = re \
             .search(r"(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]", _server_port) \
             .group(0)
@@ -56,12 +56,12 @@ class ConnectionString:
         return cls(
             server=_server,
             port=_port,
-            database=findInCS(connectionstring, 'Initial Catalog'),
-            user=findInCS(connectionstring, 'User ID'),
-            password=findInCS(connectionstring, 'Password'),
-            encrypt=findInCS(connectionstring, 'Encrypt') == 'True',
-            thrust_server_certificate=findInCS(connectionstring, 'TrustServerCertificate') == 'True',
-            timeout=int(findInCS(connectionstring, 'Connection Timeout'))
+            database=_findInCS(connectionstring, 'Initial Catalog'),
+            user=_findInCS(connectionstring, 'User ID'),
+            password=_findInCS(connectionstring, 'Password'),
+            encrypt=_findInCS(connectionstring, 'Encrypt') == 'True',
+            thrust_server_certificate=_findInCS(connectionstring, 'TrustServerCertificate') == 'True',
+            timeout=int(_findInCS(connectionstring, 'Connection Timeout'))
         )
 
     @classmethod
@@ -74,12 +74,12 @@ class ConnectionString:
         return cls(
             server=_server,
             port=_port,
-            database=findInCS(connectionstring, 'database'),
-            user=findInCS(connectionstring, 'user').split('@')[0],
-            password=findInCS(connectionstring, 'password'),
-            encrypt=findInCS(connectionstring, 'encrypt') == 'true',
-            thrust_server_certificate=findInCS(connectionstring, 'thrustServerCertificate') == 'true',
-            timeout=int(findInCS(connectionstring, 'loginTimeout'))
+            database=_findInCS(connectionstring, 'database'),
+            user=_findInCS(connectionstring, 'user').split('@')[0],
+            password=_findInCS(connectionstring, 'password'),
+            encrypt=_findInCS(connectionstring, 'encrypt') == 'true',
+            thrust_server_certificate=_findInCS(connectionstring, 'thrustServerCertificate') == 'true',
+            timeout=int(_findInCS(connectionstring, 'loginTimeout'))
         )
 
     # Since one standard have fields others don't have, lets build minimal connectionStrings
