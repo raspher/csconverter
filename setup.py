@@ -9,7 +9,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/raspher/csconverter',
-    version='0.1',
+    version='0.2',
     author="Szymon Scholz",
     classifiers=[  # Optional
             # How mature is this project? Common values are
