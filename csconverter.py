@@ -1,12 +1,13 @@
 import re
 
 
-def _findInCS(cs: str, key: str):
+def _findInCS(cs: str, keys: [str]):
     fields = cs.split(";")
     for field in fields:
-        if field.startswith(key):
-            result = field.split("=", 1)  # password may have '='
-            return result[-1]
+        for key in keys:
+            if field.startswith(key):
+                result = field.split("=", 1)  # password may have '='
+                return result[-1]
 
 
 class ConnectionString:
@@ -30,7 +31,7 @@ class ConnectionString:
 
     @classmethod
     def from_odbc(cls, connectionstring):
-        _server_port = _findInCS(connectionstring, 'Server')
+        _server_port = _findInCS(connectionstring, ['Server'])
         _server = re\
             .search(r"(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]", _server_port)\
             .group(0)
@@ -38,17 +39,17 @@ class ConnectionString:
         return cls(
             server=_server,
             port=_port,
-            database=_findInCS(connectionstring, 'Database'),
-            user=_findInCS(connectionstring, 'Uid'),
-            password=_findInCS(connectionstring, 'Pwd'),
-            encrypt=_findInCS(connectionstring, 'Encrypt') == 'yes',
-            thrust_server_certificate=_findInCS(connectionstring, 'TrustServerCertificate') == 'yes',
-            timeout=int(_findInCS(connectionstring, 'Connection Timeout'))
+            database=_findInCS(connectionstring, ['Database']),
+            user=_findInCS(connectionstring, ['Uid']),
+            password=_findInCS(connectionstring, ['Pwd']),
+            encrypt=_findInCS(connectionstring, ['Encrypt']) == 'yes',
+            thrust_server_certificate=_findInCS(connectionstring, ['TrustServerCertificate']) == 'yes',
+            timeout=int(_findInCS(connectionstring, ['Connection Timeout']))
         )
 
     @classmethod
     def from_ado_net(cls, connectionstring):
-        _server_port = _findInCS(connectionstring, 'Server')
+        _server_port = _findInCS(connectionstring, ['Server'])
         _server = re \
             .search(r"(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]", _server_port) \
             .group(0)
@@ -56,12 +57,12 @@ class ConnectionString:
         return cls(
             server=_server,
             port=_port,
-            database=_findInCS(connectionstring, 'Initial Catalog'),
-            user=_findInCS(connectionstring, 'User ID'),
-            password=_findInCS(connectionstring, 'Password'),
-            encrypt=_findInCS(connectionstring, 'Encrypt') == 'True',
-            thrust_server_certificate=_findInCS(connectionstring, 'TrustServerCertificate') == 'True',
-            timeout=int(_findInCS(connectionstring, 'Connection Timeout'))
+            database=_findInCS(connectionstring, ['Initial Catalog']),
+            user=_findInCS(connectionstring, ['User ID']),
+            password=_findInCS(connectionstring, ['Password']),
+            encrypt=_findInCS(connectionstring, ['Encrypt']) == 'True',
+            thrust_server_certificate=_findInCS(connectionstring, ['TrustServerCertificate']) == 'True',
+            timeout=int(_findInCS(connectionstring, ['Connection Timeout']))
         )
 
     @classmethod
@@ -74,17 +75,17 @@ class ConnectionString:
         return cls(
             server=_server,
             port=_port,
-            database=_findInCS(connectionstring, 'database'),
-            user=_findInCS(connectionstring, 'user').split('@')[0],
-            password=_findInCS(connectionstring, 'password'),
-            encrypt=_findInCS(connectionstring, 'encrypt') == 'true',
-            thrust_server_certificate=_findInCS(connectionstring, 'thrustServerCertificate') == 'true',
-            timeout=int(_findInCS(connectionstring, 'loginTimeout'))
+            database=_findInCS(connectionstring, ['database']),
+            user=_findInCS(connectionstring, ['user']).split('@')[0],
+            password=_findInCS(connectionstring, ['password']),
+            encrypt=_findInCS(connectionstring, ['encrypt']) == 'true',
+            thrust_server_certificate=_findInCS(connectionstring, ['thrustServerCertificate']) == 'true',
+            timeout=int(_findInCS(connectionstring, ['loginTimeout']))
         )
 
     # Since one standard have fields others don't have, lets build minimal connectionStrings
     def to_odbc(self,
-                driver="{ODBC Driver 13 for SQL Server}"):
+                driver="{ODBC Driver 17 for SQL Server}"):
         _result = f"Driver={driver};" \
                  f"Server=tcp:{self._server},{self.port};" \
                  f"Database={self._database};" \
