@@ -8,7 +8,7 @@ setup(
     description='ConnectionString Converter library',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/raspher/libcsconverter',
+    url='https://github.com/raspher/csconverter',
     version='0.1',
     author="Szymon Scholz",
     classifiers=[  # Optional
